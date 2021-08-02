@@ -78,3 +78,29 @@ create table crime_pessoa(
 	constraint fk_crime_pessoa_pessoa foreign key (id_pessoa) references pessoa(id),
 	constraint tk_crime_pesoa_crime foreign key (id_crime) references crime(id)
 );
+
+
+/*Gera armas automaticamente*/
+
+do
+$$
+declare
+	repeticao integer;
+	comando varchar default '';
+	tipo_sorteado int;
+begin
+	for repeticao in 1..10 loop
+		
+		tipo_sorteado := round(CAST (random()*2 AS NUMERIC),0);
+	
+		if tipo_sorteado = 0 then
+			comando := format('insert into arma (numero_serie, descricao, tipo) values ( %s, %s, 0);', quote_literal(uuid_generate_v4()), quote_literal(concat('fogo-', repeticao)));
+		elseif tipo_sorteado = 1 then
+			comando := format('insert into arma (numero_serie, descricao, tipo) values ( %s, %s, 1);', quote_literal(uuid_generate_v4()),  quote_literal(concat('branca-', repeticao)));
+		else
+			comando := format('insert into arma (numero_serie, descricao, tipo) values ( %s, %s, 2);', quote_literal(uuid_generate_v4()),  quote_literal(concat('outros-', repeticao)));
+		end if;
+		raise notice '%', comando;
+	end loop;
+end
+$$
