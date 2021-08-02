@@ -1,0 +1,13 @@
+select * from crosstab(
+$$
+    select d.name bairro,z.name,
+    count(*)
+    from zone z
+    inner join district d on d.id_zone = z.id
+    inner join customer c on c.id_district= d.id
+    group by 1, 2
+$$,
+$$
+    select z.name from public.zone z order by z.id
+$$
+) as (Bairro varchar, Norte integer, Sul integer, Leste integer, Oeste integer);
