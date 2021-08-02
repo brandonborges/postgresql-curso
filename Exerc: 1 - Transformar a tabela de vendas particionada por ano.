@@ -44,21 +44,5 @@ begin
 end	
 $$
 
-/* migrando informacoes*/
-
-do
-$$
-declare 
-	consulta record;
-begin 
-	for consulta in select * from sale_teste loop
-		INSERT INTO sale
-			(id, id_customer, id_branch, id_employee, "date", created_at, modified_at, active)
-			VALUES(consulta.id, consulta.id_customer, consulta.id_branch, consulta.id_employee,
-				consulta.date, consulta.created_at, consulta.modified_at, consulta.active);
-	end loop;
-end
-$$
-
 
 /* select * from sale */
