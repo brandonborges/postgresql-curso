@@ -1,0 +1,31 @@
+/*exerc : 2 -  PIVOT total vendido por grupo de produto por mês referente a um determinado ano*/
+
+select * from crosstab(
+$$
+    select pg.name,
+    ano.mes,
+    coalesce (sum(si.quantity) filter (where to_char(s.date, 'mm')::integer = ano.mes), 0) as total
+    from product p
+	inner join product_group pg on p.id_product_group=pg.id
+	inner join sale_item si on p.id=si.id_product
+	inner join sale s on si.id_sale =s.id 
+	cross join (select * from generate_series(1,12) mes) ano
+    where date_part('year', s.date) = 2019
+    group by 1, 2
+    order by 1, 2
+$$,
+$$
+    select * from generate_series(1,12) order by 1
+$$) as (name varchar,
+		january numeric,
+		febreary numeric,
+		march numeric,
+		april numeric,
+		may numeric,
+		june numeric,
+		july numeric,
+		august numeric,
+		september numeric,
+		octuber numeric,
+		november numeric,
+		december numeric)
